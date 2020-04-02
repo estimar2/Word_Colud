@@ -2,7 +2,7 @@ import React from "react";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
-import { widthStyles, withStyles } from "@material-ui/core/styles";
+import { withStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Fab from "@material-ui/core/Fab";
@@ -11,7 +11,7 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import TextFiled from "@material-ui/core/TextField";
+import TextField from "@material-ui/core/TextField";
 
 const styles = theme => ({
   fab: {
@@ -46,7 +46,7 @@ class Words extends React.Component {
   }
 
   _post(word) {
-    return fetch("${datebaseURL}/words.json", {
+    return fetch(`${databaseURL}/words.json`, {
       method: "POST",
       body: JSON.stringify(word)
     })
@@ -58,7 +58,7 @@ class Words extends React.Component {
       })
       .then(data => {
         let nextState = this.state.words;
-        nextState[databaseURL.name] = words;
+        nextState[data.name] = word;
         this.setState({ words: nextState });
       });
   }
@@ -84,7 +84,7 @@ class Words extends React.Component {
     this._get();
   }
 
-  handelDialogToggle = () =>
+  handleDialogToggle = () =>
     this.setState({
       dialog: !this.state.dialog
     });
@@ -100,14 +100,14 @@ class Words extends React.Component {
       word: this.state.word,
       weight: this.state.weight
     };
-    this.handelDialogToggle();
+    this.handleDialogToggle();
     if (!word.word && !word.weight) {
       return;
     }
     this._post(word);
   };
 
-  handelDelet = id => {
+  handleDelete = id => {
     this._delete(id);
   };
 
@@ -122,7 +122,7 @@ class Words extends React.Component {
               <Card>
                 <CardContent>
                   <Typography color="textSecondary" gutterBottom>
-                    가중치 : {word.weight}
+                    가중치: {word.weight}
                   </Typography>
                   <Grid container>
                     <Grid item xs={6}>
@@ -134,7 +134,7 @@ class Words extends React.Component {
                       <Button
                         variant="contained"
                         color="primary"
-                        onClick={() => this.handelDelet(id)}
+                        onClick={() => this.handleDelete(id)}
                       >
                         삭제
                       </Button>
@@ -149,14 +149,14 @@ class Words extends React.Component {
         <Fab
           color="primary"
           className={classes.fab}
-          onClick={this.handelDialogToggle}
+          onClick={this.handleDialogToggle}
         >
           <AddIcon />
         </Fab>
-        <Dialog open={this.state.dialog} onClose={this.handelDialogToggle}>
-          <DialogTitle>단어추가</DialogTitle>
+        <Dialog open={this.state.dialog} onClose={this.handleDialogToggle}>
+          <DialogTitle>단어 추가</DialogTitle>
           <DialogContent>
-            <TextFiled
+            <TextField
               label="단어"
               type="text"
               name="word"
@@ -164,13 +164,14 @@ class Words extends React.Component {
               onChange={this.handleValueChange}
             />
             <br />
-            <TextFiled
+            <TextField
               label="가중치"
               type="number"
               name="weight"
               value={this.state.weight}
               onChange={this.handleValueChange}
             />
+            <br />
           </DialogContent>
           <DialogActions>
             <Button
@@ -183,7 +184,7 @@ class Words extends React.Component {
             <Button
               variant="outlined"
               color="primary"
-              onClick={this.handelDialogToggle}
+              onClick={this.handleDialogToggle}
             >
               닫기
             </Button>
